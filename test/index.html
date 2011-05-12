@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="remote/qunit.css" />
+
+  <script type="text/javascript" src="remote/socket.io.js"></script>
+  <script type="text/javascript" src="remote/jquery-latest.js"></script>
+  <script type="text/javascript" src="remote/qunit.js"></script>
+
+  <script>
+        var msg = JSON.stringify({
+                    uid: "{{uid}}",
+                    starting: true});
+        $.ajax({
+            url: "submit",
+            data: msg,
+            type: 'POST',
+        });
+  </script>
+
+
+  <script type="text/javascript"
+          src="parseuri.js"></script>
+
+  <script type="text/javascript"
+          src="flyingsquirrel-client.js"></script>
+  <script type="text/javascript"
+          src="flyingsquirrel-api.js"></script>
+
+  <script>
+    var api_url = 'http://guest:guest@localhost:55672/socks-api/default';
+  </script>
+
+  <script type="text/javascript" src="test-api.js"></script>
+  <script type="text/javascript" src="test-client.js"></script>
+</head>
+<body>
+  <h1 id="qunit-header">Flyingsquirrel javascript test {{uid}}</h1>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit-testrunner-toolbar"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests"></ol>
+
+  <script>
+    QUnit.done = function (result) {
+        var msg = JSON.stringify({
+                    uid: "{{uid}}",
+                    agent: navigator.userAgent,
+                    failed: result.failed,
+                    total: result.total,
+                    runtime: result.runtime});
+        $.ajax({
+            url: "submit",
+            data: msg,
+            type: 'POST',
+            success: function () { poll();}
+        });
+    }
+
+    function getParameterByName (name) {
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+            return "";
+        else
+            return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    // This logic is responsible for restarting the test
+    // automatically.
+    var delay = 1000;
+    var uid = "{{uid}}";
+
+    function poll() {
+        if (getParameterByName('reload') !== 'true') {
+            return;
+        }
+        $.ajax({
+            url: "uid.json",
+            type: 'GET',
+            cache: false,
+            dataType: 'json',
+            success: poll_ok,
+            error: poll_restart
+        });
+    };
+
+    function poll_ok(data) {
+        if (data.uid !== uid) {
+            window.location.reload();
+        } else {
+           poll_restart();
+        }
+    };
+    function poll_restart() {
+        setTimeout(poll, delay);
+    };
+
+  </script>
+</body>
+</html>
