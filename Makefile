@@ -1,12 +1,13 @@
 
+.PHONY: all
 all: jslint test
 
-.PHONY:: test
+.PHONY: test
 test:
 	(cd test; ./runner.py single_run;)
 
 
-.PHONY:: jslint
+.PHONY: jslint
 jslint: jslint.js
 	./jslint-check.js lib/flyingsquirrel-api.js lib/flyingsquirrel-client.js
 
