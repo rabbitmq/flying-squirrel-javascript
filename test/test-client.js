@@ -236,8 +236,16 @@ var test_request_reply = function() {
                                       'b':['rep','req-test']});
     var conn = app.conn;
 
-    conn.on_connect = function () {ok(true);};
+    conn.on_connect = function () {ok(true);
+                                   conn.on_connect = function () {
+                                       throw "bad event";
+                                   };
+                                  };
     conn.on_disconnect = function (_conn, reason, descr) {
+        throw "bad event " + reason + ' ' +descr;
+    };
+
+    var on_disconnect_ok = function (_conn, reason, descr) {
         ok(true);
         conn.on_disconnect = function () {throw "bad event";};
         conn.on_connect = function () {throw "bad event";};
@@ -257,6 +265,7 @@ var test_request_reply = function() {
         conn.request('a', e, function (answer, channel, msgobj) {
                          equals('r_' + e, answer, 'answer ' + answer);
                          if (expected.length === 0) {
+                             conn.on_disconnect = on_disconnect_ok;
                              conn.disconnect();
                          } else {
                              single_req();
@@ -267,4 +276,4 @@ var test_request_reply = function() {
     single_req();
     conn.connect();
 };
-//asyncTest("request reply", 14, test_request_reply);
+asyncTest("request reply", 13, test_request_reply);
