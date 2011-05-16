@@ -211,7 +211,8 @@ var test_broken_frame = function() {
         start();
     };
 
-    var expected = ['a ', 'a b  ', ' a b c', '', '  a', '\x00\xFF x \x00\xff'];
+    var expected = ['a ', 'a b  ', ' a b c', '', '  a',
+                    '\x00\xFF x \x00\xff', 'берегу пустынных волн'];
 
     // Send first bunch
     $.each(expected, function (_, msg) {
@@ -226,4 +227,44 @@ var test_broken_frame = function() {
                    });
     conn.connect();
 };
-asyncTest("broken frame and recovery", 14, test_broken_frame);
+asyncTest("broken frame and recovery", 15, test_broken_frame);
+
+
+
+var test_request_reply = function() {
+    var app = basic_socketio_factory({'a':['req','req-test'],
+                                      'b':['rep','req-test']});
+    var conn = app.conn;
+
+    conn.on_connect = function () {ok(true);};
+    conn.on_disconnect = function (_conn, reason, descr) {
+        ok(true);
+        conn.on_disconnect = function () {throw "bad event";};
+        conn.on_connect = function () {throw "bad event";};
+        app.cleanup();
+        start();
+    };
+
+    var expected = ['a ', 'a b  ', ' a b c', '', '  a',
+                    '\x00\xFF x \x00\xff', 'берегу пустынных волн'];
+
+    conn.serve('b', function(msg, channel, msgobj, reply_fun) {
+                   reply_fun('r_' + msg);
+               });
+
+    function single_req() {
+        var e = expected.shift();
+        conn.request('a', e, function (answer, channel, msgobj) {
+                         equals('r_' + e, answer, 'answer ' + answer);
+                         if (expected.length === 0) {
+                             conn.disconnect();
+                         } else {
+                             single_req();
+                         }
+                     });
+    }
+
+    single_req();
+    conn.connect();
+};
+//asyncTest("request reply", 14, test_request_reply);
