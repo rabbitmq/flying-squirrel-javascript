@@ -93,7 +93,9 @@ var test_bad_ticket1 = function() {
     };
     conn.on_disconnect = function (_conn, reason, descr) {
         equal('refused', reason);
-        equal('malformed_ticket', descr);
+        // Chrome returns error, then disconnects. FF just sees
+        // a disconnect event - no error message is delivered.
+        ok(['malformed_ticket', 'disconnected'].indexOf(descr) != -1);
         ok(true);
         conn.on_disconnect = function () {throw "bad event";};
         conn.on_connect = function () {throw "bad event";};
@@ -114,7 +116,9 @@ var test_bad_ticket2 = function() {
     };
     conn.on_disconnect = function (_conn, reason, descr) {
         equal('refused', reason);
-        equal('invalid_hmac', descr);
+        // Chrome returns error, then disconnects. FF just sees
+        // a disconnect event - no error message is delivered.
+        ok(['invalid_hmac', 'disconnected'].indexOf(descr) != -1);
         ok(true);
         conn.on_disconnect = function () {throw "bad event";};
         conn.on_connect = function () {throw "bad event";};
