@@ -6,6 +6,10 @@ all: jslint test
 test:
 	(cd test; ./runner.py single_run;)
 
+.PHONY: run
+run:
+	(cd test; ./runner.py;)
+
 
 .PHONY: jslint
 jslint: jslint.js

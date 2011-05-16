@@ -66,8 +66,7 @@
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    // This logic is responsible for restarting the test
-    // automatically.
+    // Restart the test automatically if parameter ?reload=true.
     var delay = 1000;
     var uid = "{{uid}}";
 
