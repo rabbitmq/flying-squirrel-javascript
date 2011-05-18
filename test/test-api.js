@@ -39,8 +39,17 @@ var api_sychronous = function () {
     ok(endpoint.protocols['websockets'].length > 0);
     deepEqual(edef, endpoint.definition);
 
+    var l1 = api.list_endpoints();
+    ok(l1.length > 0);
+
+    var endpoint2 = api.get_endpoint(ename);
+    deepEqual(endpoint, endpoint2);
+
     var d = api.delete_endpoint(ename);
     equal(204, d);
+
+    var l2 = api.list_endpoints();
+    ok(l2.length === l1.length-1);
 };
 test("API (synchronous)", api_sychronous);
 

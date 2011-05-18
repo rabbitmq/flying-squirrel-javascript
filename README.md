@@ -86,7 +86,9 @@ Documentation
 
 #### Methods:
 
+ - *get_endpoint(name, [callback])*
  - *create_endpoint(name, definition, [callback])*
  - *delete_endpoint(name, [callback])*
+ - *list_endpoints([callback])*
  - *generate_ticket(name, identity, [callback], [timeout])*
 
