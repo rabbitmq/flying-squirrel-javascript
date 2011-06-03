@@ -14,7 +14,7 @@ that inside html "head" tag:
             src="http://cdn.socket.io/stable/socket.io.js"></script>
 
     <script type="text/javascript"
-            src="http://cdn.squirr.us/flying-squirrel-client-0.0.0.js"></script>
+            src="http://cdn.squirr.us/flyingsquirrel-client-0.0.0.js"></script>
 
 
 To establish a client connection you need two variables
@@ -62,7 +62,7 @@ library. Put that inside html "head" tag:
             src="http://code.jquery.com/jquery-1.6.min.js"></script>
 
     <script type="text/javascript"
-            src="http://cdn.squirr.us/flying-squirrel-api-0.0.0.js"></script>
+            src="http://cdn.squirr.us/flyingsquirrel-api-0.0.0.js"></script>
 
 
 To connect to Flying Squirrel service need the `api_url`.
